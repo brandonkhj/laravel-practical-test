@@ -10,7 +10,7 @@ class LoginRequest extends ApiRequest
     {
         return [
             'email' => 'required|email|exists:users,email|min:6',
-            'password' => 'required|min:8'
+            'password' => 'required|min:8',
         ];
     }
 }
