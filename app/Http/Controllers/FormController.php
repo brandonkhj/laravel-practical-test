@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\InputType;
+use App\Events\FormSubmitted;
 use App\Models\Form;
 use Illuminate\Support\Facades\DB;
 
@@ -43,6 +44,10 @@ class FormController extends Controller
         DB::commit();
 
         $cookie = cookie('submitSuccess', true, 0.02);
+
+        $form->refresh();
+
+        event(new FormSubmitted(form: $form));
 
         return redirect(route('home'))->withCookie($cookie);
     }
