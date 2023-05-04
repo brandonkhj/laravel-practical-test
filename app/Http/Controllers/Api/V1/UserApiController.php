@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Resources\Auth\UserResource;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,7 +16,7 @@ class UserApiController extends Controller
     public function register(RegisterRequest $request)
     {
         try {
-            User::create([
+            $user = User::create([
                 'email' => $request->input('email'),
                 'password' => bcrypt($request->input('password')),
             ]);
@@ -27,6 +28,8 @@ class UserApiController extends Controller
                 'status' => 500,
             ], 500));
         }
+
+        event(new Registered(user: $user));
 
         return response()->json([
             'status' => 200,
